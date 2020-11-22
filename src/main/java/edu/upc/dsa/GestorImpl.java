@@ -1,97 +1,100 @@
 package edu.upc.dsa;
 
-import edu.upc.dsa.models.Album;
-import edu.upc.dsa.models.Track;
+import edu.upc.dsa.models.Order;
+import edu.upc.dsa.models.Product;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import edu.upc.dsa.models.Usuari;
 import org.apache.log4j.Logger;
 
-public class TracksManagerImpl implements TracksManager {
-    private static TracksManager instance;
-    protected List<Track> tracks;
+public class GestorImpl implements Gestor {
+
+    private static Gestor instance;
+    protected List<Product> products;
   //  protected Queue<Track> ColaRep;                                 //quines cançons afegeixo si no tinc memoria
 
-    protected List<Album> albums;
+    protected List<Order> orders;
     protected List<Usuari> usuaris;
+   // protected HashMap<String, Usuari> usuaris = new HashMap<String, Usuari>();;
 
-    final static Logger logger = Logger.getLogger(TracksManagerImpl.class);
+    final static Logger logger = Logger.getLogger(GestorImpl.class);
 
 
-    private TracksManagerImpl() {
-        this.tracks = new LinkedList<>();
-        this.albums = new LinkedList<>();
-        this.usuaris= new LinkedList<>();
+    private GestorImpl() {
+        this.products = new LinkedList<>();
+        this.orders = new LinkedList<>();
+        //this.usuaris= new LinkedList<>();
     }
 
-    public static TracksManager getInstance() {
-        if (instance==null) instance = new TracksManagerImpl();
+    public static Gestor getInstance() {
+        if (instance==null) instance = new GestorImpl();
         return instance;
     }
 ///////////////////////////////////////////////////////////////////////TRACKS
     public int size() {
-        int ret = this.tracks.size();
+        int ret = this.products.size();
+
         logger.info("size " + ret);
 
         return ret;
     }
 
-    public Track addTrack(Track t) {
-        logger.info("new Track " + t);
+    public Product addProduct(Product t) {
+        logger.info("new Product " + t);
 
-        this.tracks.add (t);
-        logger.info("new Track added");
+        this.products.add (t);
+        logger.info("new Product added");
         return t;
     }
 
-    public Track addTrack(String title, String singer) {
-        return this.addTrack(new Track(title, singer));
+    public Product addProduct(String productName, String prize) {
+        return this.addProduct(new Product(productName, prize));
     }
 
-    public Track getTrack(String id) {
-        logger.info("getTrack("+id+")");
+    public Product getProduct(String id) {
+        logger.info("getProduct("+id+")");
 
-        for (Track t: this.tracks) {
+        for (Product t: this.products) {
             if (t.getId().equals(id)) {
-                logger.info("getTrack("+id+"): "+t);
+                logger.info("getProduct("+id+"): "+t);
 
                 return t;
             }
         }
 
-        logger.warn("not found " + id);
+        logger.warn("Product not found " + id);
         return null;
     }
 
-    public List<Track> findAllTracks() {
-        return this.tracks;
+    public List<Product> findAllProducts() {
+        return this.products;
     }
 
     @Override
-    public void deleteTrack(String id) {
+    public void deleteProduct(String id) {
 
-        Track t = this.getTrack(id);
+        Product t = this.getProduct(id);
         if (t==null) {
             logger.warn("not found " + t);
         }
         else logger.info(t+" deleted ");
 
-        this.tracks.remove(t);
+        this.products.remove(t);
 
     }
 
     @Override
-    public Track updateTrack(Track p) {
-        Track t = this.getTrack(p.getId());
+    public Product updateProduct(Product p) {
+        Product t = this.getProduct(p.getId());
 
         if (t!=null) {
             logger.info(p+" rebut!!!! ");
 
-            t.setSinger(p.getSinger());
-            t.setTitle(p.getTitle());
+            t.setId(p.getId());
+            t.setPrize(p.getPrize());
+            t.setProductName(p.getProductName());
 
             logger.info(t+" updated ");
         }
@@ -102,8 +105,8 @@ public class TracksManagerImpl implements TracksManager {
         return t;
     }
 
-    public int tracksize() {
-        int ret = this.tracks.size();
+    public int productsize() {
+        int ret = this.products.size();
         logger.info("size " + ret);
 
         return ret;
@@ -121,24 +124,24 @@ public class TracksManagerImpl implements TracksManager {
         return this.ColaRep;
     }*/
 /////////////////////////////////////////////////////////////////////////////////////////////// Albums
-    public Album addAlbum(Album a) {
-        logger.info("new Album " + a);
+    public Order addOrder(Order a) {
+        logger.info("new Order " + a);
 
-        this.albums.add (a);
-        logger.info("new Album added");
+        this.orders.add (a);
+        logger.info("new Order added");
         return a;
     }
 
-    public Album addAlbum(String title, String singer) {
-        return this.addAlbum(new Album(title, singer));
+    public Order addOrder(String state, String user) {
+        return this.addOrder(new Order(state, user));
     }
 
-    public Album getAlbum(String id) {
-        logger.info("getAlbum("+id+")");
+    public Order getOrder(int id) {
+        logger.info("getOrder("+id+")");
 
-        for (Album a: this.albums) {
-            if (a.getId().equals(id)) {
-                logger.info("getAlbum("+id+"): "+a);
+        for (Order a: this.orders) {
+            if (a.getId()==id) {
+                logger.info("getOrder("+id+"): "+a);
 
                 return a;
             }
@@ -148,44 +151,44 @@ public class TracksManagerImpl implements TracksManager {
         return null;
     }
 
-    public List<Album> findAllAlbums() {
-        return this.albums;
+    public List<Order> findAllOrders() {
+        return this.orders;
     }
 
     @Override
-    public void deleteAlbum(String id) {
+    public void deleteOrder(int id) {
 
-        Album a = this.getAlbum(id);
+        Order a = this.getOrder(id);
         if (a==null) {
             logger.warn("not found " + a);
         }
         else logger.info(a+" deleted ");
 
-        this.albums.remove(a);
+        this.orders.remove(a);
 
     }
 
     @Override
-    public Album updateAlbum(Album s) {
-        Album album = this.getAlbum(s.getId());
+    public Order updateOrder(Order s) {
+        Order order = this.getOrder(s.getId());
 
-        if (album!=null) {
+        if (order !=null) {
             logger.info(s+" rebut!!!! ");
 
-            album.setSinger(s.getSinger());
-            album.setTitle(s.getTitle());
+            order.setUser(s.getUser());
+            order.setState(s.getState());
 
-            logger.info(album+" updated ");
+            logger.info(order +" updated ");
         }
         else {
             logger.warn("not found "+s);
         }
 
-        return album;
+        return order;
     }
 
-    public int albumsize() {
-        int ret = this.albums.size();
+    public int ordersize() {
+        int ret = this.orders.size();
         logger.info("size " + ret);
 
         return ret;
@@ -246,7 +249,7 @@ public class TracksManagerImpl implements TracksManager {
             logger.info(s+" rebut!!!! ");
 
             album.setPwd(s.getPwd());
-            album.setTitle(s.getTitle());
+            album.setTitle(s.getState());
 
             logger.info(album+" updated ");
         }
@@ -260,12 +263,13 @@ public class TracksManagerImpl implements TracksManager {
     public Usuari addUsuari(Usuari u) {
         logger.info("new Usuari " + u);
 
-        this.usuaris.add (u);
+        this.usuaris.add(u);
         logger.info("new User added");
         return u;
     }
 
     public Usuari addUsuari(String nom, String pwd) {
+        logger.info("new Usuari " +nom);
         return this.addUsuari(new Usuari(nom, pwd));
     }
 
@@ -273,7 +277,7 @@ public class TracksManagerImpl implements TracksManager {
         logger.info("getUsuari("+id+")");
 
         for (Usuari u: this.usuaris) {
-            if (u.getId().equals(id)) {
+            if (u.getId().equals(id)) {                 //user u = this.users.get (id); tb es pot fer aixi
                 logger.info("getUsuari("+id+"): "+u);
 
                 return u;
